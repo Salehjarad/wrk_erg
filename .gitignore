@@ -1,0 +1,6 @@
+node_modules/
+uploads/*.*
+.vscode
+prisma/migrations/
+prisma/dev.db
+prisma/.env
