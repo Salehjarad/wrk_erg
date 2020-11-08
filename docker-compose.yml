@@ -1,0 +1,14 @@
+version: "3.1"
+
+services:
+  postgres_db:
+    image: postgres:latest
+    restart: always
+    container_name: postgres-archive
+    ports:
+      - "5432:5432"
+    network_mode: bridge
+    environment:
+      POSTGRES_PASSWORD: bar123
+      POSTGRES_USER: sja
+      POSTGRES_DB: archive

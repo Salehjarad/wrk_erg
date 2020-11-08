@@ -5,9 +5,11 @@ import {
   arg,
   intArg,
   inputObjectType,
+  subscriptionField,
 } from "@nexus/schema";
 import { upload_proccessing } from "../utils";
 import { TagClean } from "../helpers";
+import { DocumentPost } from "../helpers/enums";
 
 export const Document = objectType({
   name: "Document",
@@ -53,7 +55,6 @@ export const CreateDocument = extendType({
         doc_number: stringArg({ required: true }),
         doc_date: stringArg({ required: true }),
         doc_type: stringArg({ required: true }),
-        userId: intArg({ required: true }),
         hashtag: arg({
           type: "TagInput",
           required: true,
@@ -61,17 +62,11 @@ export const CreateDocument = extendType({
         }),
         file: arg({ type: "Upload", required: false }),
       },
-      resolve: async (_root, args, { prisma, req }) => {
+      resolve: async (_root, args, { prisma, req, pubsub, userId }) => {
+        const uid: any = await userId(req);
+        const user = await prisma.user.findOne({ where: { id: uid } });
         let pathone = "";
-        const {
-          content,
-          doc_date,
-          doc_number,
-          userId,
-          hashtag,
-          doc_type,
-          file,
-        } = args;
+        const { content, doc_date, doc_number, hashtag, doc_type, file } = args;
         if (file) {
           const { createReadStream, filename, mimetype } = await file;
           console.log("file", file.filename);
@@ -96,14 +91,54 @@ export const CreateDocument = extendType({
             file_url: pathone,
             user: {
               connect: {
-                id: userId,
+                id: uid,
               },
             },
             tags,
           },
         });
-
+        await pubsub.publish(DocumentPost.DOC_CHANNEL, {
+          mutation: DocumentPost.ADDED,
+          doc: newPost,
+        });
         return newPost;
+      },
+    });
+  },
+});
+
+export const DeleteDocument = extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("deleteDocment", {
+      type: "Document",
+      nullable: false,
+      args: {
+        id: intArg({ required: true }),
+      },
+      resolve: async (_root, args, { prisma, req, pubsub, userId }) => {
+        const uid: any = await userId(req);
+        const holdeDocumentInfo: Partial<any[]> = [];
+        const document = await prisma.document.findOne({
+          where: { id: args.id },
+          include: { user: true },
+        });
+        if (document?.userId !== uid) {
+          throw new Error("not yours to delete");
+        }
+
+        holdeDocumentInfo.push(document);
+
+        await prisma.document.delete({
+          where: { id: args.id },
+        });
+
+        await pubsub.publish(DocumentPost.DOC_CHANNEL, {
+          mutation: DocumentPost.DELETED,
+          doc: holdeDocumentInfo[0],
+        });
+        console.log(holdeDocumentInfo[0]);
+        return holdeDocumentInfo[0];
       },
     });
   },
@@ -158,4 +193,20 @@ export const DocumentSearchQuery = extendType({
       },
     });
   },
+});
+
+export const DocumentSubscrbtionType = objectType({
+  name: "DocumentSub",
+  definition(t) {
+    t.string("mutation");
+    t.field("doc", { type: "Document" });
+  },
+});
+
+export const DocumentSubscrbtion = subscriptionField("document", {
+  type: "DocumentSub",
+  subscribe: (_root, args, { pubsub }) => {
+    return pubsub.asyncIterator(DocumentPost.DOC_CHANNEL);
+  },
+  resolve: (payload: any) => payload,
 });

@@ -117,12 +117,6 @@ type Document {
   userId: Int!
 }
 
-input DocumentCreateManyWithoutUserInput {
-  connect: [DocumentWhereUniqueInput!]
-  connectOrCreate: [DocumentCreateOrConnectWithoutUserInput!]
-  create: [DocumentCreateWithoutUserInput!]
-}
-
 input DocumentCreateOrConnectWithoutUserInput {
   create: DocumentCreateWithoutUserInput!
   where: DocumentWhereUniqueInput!
@@ -153,6 +147,11 @@ input DocumentScalarWhereInput {
   OR: [DocumentScalarWhereInput!]
   updated_at: DateTimeFilter
   userId: IntFilter
+}
+
+type DocumentSub {
+  doc: Document
+  mutation: String
 }
 
 input DocumentUpdateManyDataInput {
@@ -228,8 +227,9 @@ input IntFilter {
 
 type Mutation {
   addAttachment(docId: Int!, file: Upload): Attachment
-  createDocument(content: String!, doc_date: String!, doc_number: String!, doc_type: String!, file: Upload, hashtag: TagInput! = {value: ["new"]}, userId: Int!): Document!
-  createOneUser(data: UserCreateInput!): User!
+  createDocument(content: String!, doc_date: String!, doc_number: String!, doc_type: String!, file: Upload, hashtag: TagInput! = {value: ["new"]}): Document!
+  createNewUser(email: String!, password: String!, username: String!): UserPayload
+  deleteDocment(id: Int!): Document!
   deleteOneUser(where: UserWhereUniqueInput!): User
   deleteTag(value: String): Boolean
   updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
@@ -292,6 +292,7 @@ input NullableStringFieldUpdateOperationsInput {
 type Query {
   documents(after: DocumentWhereUniqueInput, before: DocumentWhereUniqueInput, first: Int, last: Int): [Document!]!
   helloworld: String
+  login(password: String!, username: String!): UserPayload
   me: User
   search(query: String): [Document]
   tags(after: TagWhereUniqueInput, before: TagWhereUniqueInput, first: Int, last: Int): [Tag!]!
@@ -348,6 +349,11 @@ input StringNullableFilter {
   not: NestedStringNullableFilter
   notIn: [String!]
   startsWith: String
+}
+
+type Subscription {
+  document: DocumentSub
+  live: String
 }
 
 type Tag {
@@ -440,15 +446,9 @@ type User {
   username: String!
 }
 
-input UserCreateInput {
-  created_at: DateTime
-  docs: DocumentCreateManyWithoutUserInput
-  email: String!
-  fname: String
-  lname: String
-  rule: Rule
-  updated_at: DateTime
-  username: String!
+type UserPayload {
+  token: String
+  user: User
 }
 
 input UserUpdateInput {
@@ -457,6 +457,7 @@ input UserUpdateInput {
   email: StringFieldUpdateOperationsInput
   fname: NullableStringFieldUpdateOperationsInput
   lname: NullableStringFieldUpdateOperationsInput
+  password: StringFieldUpdateOperationsInput
   rule: EnumRuleFieldUpdateOperationsInput
   updated_at: DateTimeFieldUpdateOperationsInput
   username: StringFieldUpdateOperationsInput
