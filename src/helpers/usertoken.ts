@@ -10,7 +10,7 @@ export const makeToken = (userId: number): Promise<string> => {
       {
         userId,
       },
-      "saleh"
+      ""
     );
 
     resolve(token);
@@ -24,7 +24,7 @@ export const userId = (req: Request) => {
       reject("no token found");
     }
     const token = authorization?.split("Bearer ")[1];
-    const userToken: any = jwt.verify(token!, "saleh");
+    const userToken: any = jwt.verify(token!, "");
     resolve(userToken?.userId);
   });
 };
