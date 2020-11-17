@@ -11,75 +11,6 @@ type Attachment {
   updated_at: DateTime!
 }
 
-input AttachmentCreateManyWithoutDocInput {
-  connect: [AttachmentWhereUniqueInput!]
-  connectOrCreate: [AttachmentCreateOrConnectWithoutDocumentInput!]
-  create: [AttachmentCreateWithoutDocInput!]
-}
-
-input AttachmentCreateOrConnectWithoutDocumentInput {
-  create: AttachmentCreateWithoutDocInput!
-  where: AttachmentWhereUniqueInput!
-}
-
-input AttachmentCreateWithoutDocInput {
-  created_at: DateTime
-  file_url: String
-  updated_at: DateTime
-}
-
-input AttachmentScalarWhereInput {
-  AND: [AttachmentScalarWhereInput!]
-  created_at: DateTimeFilter
-  docId: IntFilter
-  file_url: StringNullableFilter
-  id: IntFilter
-  NOT: [AttachmentScalarWhereInput!]
-  OR: [AttachmentScalarWhereInput!]
-  updated_at: DateTimeFilter
-}
-
-input AttachmentUpdateManyDataInput {
-  created_at: DateTimeFieldUpdateOperationsInput
-  file_url: NullableStringFieldUpdateOperationsInput
-  updated_at: DateTimeFieldUpdateOperationsInput
-}
-
-input AttachmentUpdateManyWithoutDocInput {
-  connect: [AttachmentWhereUniqueInput!]
-  connectOrCreate: [AttachmentCreateOrConnectWithoutDocumentInput!]
-  create: [AttachmentCreateWithoutDocInput!]
-  delete: [AttachmentWhereUniqueInput!]
-  deleteMany: [AttachmentScalarWhereInput!]
-  disconnect: [AttachmentWhereUniqueInput!]
-  set: [AttachmentWhereUniqueInput!]
-  update: [AttachmentUpdateWithWhereUniqueWithoutDocInput!]
-  updateMany: [AttachmentUpdateManyWithWhereNestedInput!]
-  upsert: [AttachmentUpsertWithWhereUniqueWithoutDocInput!]
-}
-
-input AttachmentUpdateManyWithWhereNestedInput {
-  data: AttachmentUpdateManyDataInput!
-  where: AttachmentScalarWhereInput!
-}
-
-input AttachmentUpdateWithoutDocDataInput {
-  created_at: DateTimeFieldUpdateOperationsInput
-  file_url: NullableStringFieldUpdateOperationsInput
-  updated_at: DateTimeFieldUpdateOperationsInput
-}
-
-input AttachmentUpdateWithWhereUniqueWithoutDocInput {
-  data: AttachmentUpdateWithoutDocDataInput!
-  where: AttachmentWhereUniqueInput!
-}
-
-input AttachmentUpsertWithWhereUniqueWithoutDocInput {
-  create: AttachmentCreateWithoutDocInput!
-  update: AttachmentUpdateWithoutDocDataInput!
-  where: AttachmentWhereUniqueInput!
-}
-
 input AttachmentWhereUniqueInput {
   id: Int
 }
@@ -88,21 +19,6 @@ input AttachmentWhereUniqueInput {
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
 scalar DateTime
-
-input DateTimeFieldUpdateOperationsInput {
-  set: DateTime
-}
-
-input DateTimeFilter {
-  equals: DateTime
-  gt: DateTime
-  gte: DateTime
-  in: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  not: NestedDateTimeFilter
-  notIn: [DateTime!]
-}
 
 type Document {
   attachment(after: AttachmentWhereUniqueInput, before: AttachmentWhereUniqueInput, first: Int, last: Int): [Attachment!]!
@@ -117,92 +33,9 @@ type Document {
   userId: Int!
 }
 
-input DocumentCreateOrConnectWithoutUserInput {
-  create: DocumentCreateWithoutUserInput!
-  where: DocumentWhereUniqueInput!
-}
-
-input DocumentCreateWithoutUserInput {
-  attachment: AttachmentCreateManyWithoutDocInput
-  content: String!
-  created_at: DateTime
-  doc_date: String!
-  doc_number: String!
-  doc_type: String!
-  file_url: String
-  tags: TagCreateManyWithoutDocInput
-  updated_at: DateTime
-}
-
-input DocumentScalarWhereInput {
-  AND: [DocumentScalarWhereInput!]
-  content: StringFilter
-  created_at: DateTimeFilter
-  doc_date: StringFilter
-  doc_number: StringFilter
-  doc_type: StringFilter
-  file_url: StringNullableFilter
-  id: IntFilter
-  NOT: [DocumentScalarWhereInput!]
-  OR: [DocumentScalarWhereInput!]
-  updated_at: DateTimeFilter
-  userId: IntFilter
-}
-
 type DocumentSub {
   doc: Document
   mutation: String
-}
-
-input DocumentUpdateManyDataInput {
-  content: StringFieldUpdateOperationsInput
-  created_at: DateTimeFieldUpdateOperationsInput
-  doc_date: StringFieldUpdateOperationsInput
-  doc_number: StringFieldUpdateOperationsInput
-  doc_type: StringFieldUpdateOperationsInput
-  file_url: NullableStringFieldUpdateOperationsInput
-  updated_at: DateTimeFieldUpdateOperationsInput
-}
-
-input DocumentUpdateManyWithoutUserInput {
-  connect: [DocumentWhereUniqueInput!]
-  connectOrCreate: [DocumentCreateOrConnectWithoutUserInput!]
-  create: [DocumentCreateWithoutUserInput!]
-  delete: [DocumentWhereUniqueInput!]
-  deleteMany: [DocumentScalarWhereInput!]
-  disconnect: [DocumentWhereUniqueInput!]
-  set: [DocumentWhereUniqueInput!]
-  update: [DocumentUpdateWithWhereUniqueWithoutUserInput!]
-  updateMany: [DocumentUpdateManyWithWhereNestedInput!]
-  upsert: [DocumentUpsertWithWhereUniqueWithoutUserInput!]
-}
-
-input DocumentUpdateManyWithWhereNestedInput {
-  data: DocumentUpdateManyDataInput!
-  where: DocumentScalarWhereInput!
-}
-
-input DocumentUpdateWithoutUserDataInput {
-  attachment: AttachmentUpdateManyWithoutDocInput
-  content: StringFieldUpdateOperationsInput
-  created_at: DateTimeFieldUpdateOperationsInput
-  doc_date: StringFieldUpdateOperationsInput
-  doc_number: StringFieldUpdateOperationsInput
-  doc_type: StringFieldUpdateOperationsInput
-  file_url: NullableStringFieldUpdateOperationsInput
-  tags: TagUpdateManyWithoutDocInput
-  updated_at: DateTimeFieldUpdateOperationsInput
-}
-
-input DocumentUpdateWithWhereUniqueWithoutUserInput {
-  data: DocumentUpdateWithoutUserDataInput!
-  where: DocumentWhereUniqueInput!
-}
-
-input DocumentUpsertWithWhereUniqueWithoutUserInput {
-  create: DocumentCreateWithoutUserInput!
-  update: DocumentUpdateWithoutUserDataInput!
-  where: DocumentWhereUniqueInput!
 }
 
 input DocumentWhereUniqueInput {
@@ -210,98 +43,25 @@ input DocumentWhereUniqueInput {
   id: Int
 }
 
-input EnumRuleFieldUpdateOperationsInput {
-  set: Rule
-}
-
-input IntFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: NestedIntFilter
-  notIn: [Int!]
-}
-
 type Mutation {
   addAttachment(docId: Int!, file: Upload): Attachment
+  addNewUser(password: String!, type: Role! = VIEWER, username: String!): String
   createDocument(content: String!, doc_date: String!, doc_number: String!, doc_type: String!, file: Upload, hashtag: TagInput! = {value: ["new"]}): Document!
   createNewUser(email: String!, password: String!, username: String!): UserPayload
   deleteDocment(id: Int!): Document!
   deleteOneUser(where: UserWhereUniqueInput!): User
   deleteTag(value: String): Boolean
-  updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-}
-
-input NestedDateTimeFilter {
-  equals: DateTime
-  gt: DateTime
-  gte: DateTime
-  in: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  not: NestedDateTimeFilter
-  notIn: [DateTime!]
-}
-
-input NestedIntFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: NestedIntFilter
-  notIn: [Int!]
-}
-
-input NestedStringFilter {
-  contains: String
-  endsWith: String
-  equals: String
-  gt: String
-  gte: String
-  in: [String!]
-  lt: String
-  lte: String
-  not: NestedStringFilter
-  notIn: [String!]
-  startsWith: String
-}
-
-input NestedStringNullableFilter {
-  contains: String
-  endsWith: String
-  equals: String
-  gt: String
-  gte: String
-  in: [String!]
-  lt: String
-  lte: String
-  not: NestedStringNullableFilter
-  notIn: [String!]
-  startsWith: String
-}
-
-input NullableStringFieldUpdateOperationsInput {
-  set: String
+  login(password: String!, username: String!): UserPayload
+  updateUserFromAdmin(password: String, type: Role, uid: Int!, updateType: String!, username: String): String
 }
 
 type Query {
   documents(after: DocumentWhereUniqueInput, before: DocumentWhereUniqueInput, first: Int, last: Int): [Document!]!
   helloworld: String
-  login(password: String!, username: String!): UserPayload
   me: User
   search(query: String): [Document]
   tags(after: TagWhereUniqueInput, before: TagWhereUniqueInput, first: Int, last: Int): [Tag!]!
   users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
-}
-
-enum QueryMode {
-  default
-  insensitive
 }
 
 enum Role {
@@ -317,40 +77,6 @@ enum Rule {
   VIEWER
 }
 
-input StringFieldUpdateOperationsInput {
-  set: String
-}
-
-input StringFilter {
-  contains: String
-  endsWith: String
-  equals: String
-  gt: String
-  gte: String
-  in: [String!]
-  lt: String
-  lte: String
-  mode: QueryMode
-  not: NestedStringFilter
-  notIn: [String!]
-  startsWith: String
-}
-
-input StringNullableFilter {
-  contains: String
-  endsWith: String
-  equals: String
-  gt: String
-  gte: String
-  in: [String!]
-  lt: String
-  lte: String
-  mode: QueryMode
-  not: NestedStringNullableFilter
-  notIn: [String!]
-  startsWith: String
-}
-
 type Subscription {
   document: DocumentSub
   live: String
@@ -362,68 +88,8 @@ type Tag {
   value: String!
 }
 
-input TagCreateManyWithoutDocInput {
-  connect: [TagWhereUniqueInput!]
-  connectOrCreate: [TagCreateOrConnectWithoutDocumentInput!]
-  create: [TagCreateWithoutDocInput!]
-}
-
-input TagCreateOrConnectWithoutDocumentInput {
-  create: TagCreateWithoutDocInput!
-  where: TagWhereUniqueInput!
-}
-
-input TagCreateWithoutDocInput {
-  value: String!
-}
-
 input TagInput {
   value: [String]!
-}
-
-input TagScalarWhereInput {
-  AND: [TagScalarWhereInput!]
-  id: IntFilter
-  NOT: [TagScalarWhereInput!]
-  OR: [TagScalarWhereInput!]
-  value: StringFilter
-}
-
-input TagUpdateManyDataInput {
-  value: StringFieldUpdateOperationsInput
-}
-
-input TagUpdateManyWithoutDocInput {
-  connect: [TagWhereUniqueInput!]
-  connectOrCreate: [TagCreateOrConnectWithoutDocumentInput!]
-  create: [TagCreateWithoutDocInput!]
-  delete: [TagWhereUniqueInput!]
-  deleteMany: [TagScalarWhereInput!]
-  disconnect: [TagWhereUniqueInput!]
-  set: [TagWhereUniqueInput!]
-  update: [TagUpdateWithWhereUniqueWithoutDocInput!]
-  updateMany: [TagUpdateManyWithWhereNestedInput!]
-  upsert: [TagUpsertWithWhereUniqueWithoutDocInput!]
-}
-
-input TagUpdateManyWithWhereNestedInput {
-  data: TagUpdateManyDataInput!
-  where: TagScalarWhereInput!
-}
-
-input TagUpdateWithoutDocDataInput {
-  value: StringFieldUpdateOperationsInput
-}
-
-input TagUpdateWithWhereUniqueWithoutDocInput {
-  data: TagUpdateWithoutDocDataInput!
-  where: TagWhereUniqueInput!
-}
-
-input TagUpsertWithWhereUniqueWithoutDocInput {
-  create: TagCreateWithoutDocInput!
-  update: TagUpdateWithoutDocDataInput!
-  where: TagWhereUniqueInput!
 }
 
 input TagWhereUniqueInput {
@@ -449,18 +115,6 @@ type User {
 type UserPayload {
   token: String
   user: User
-}
-
-input UserUpdateInput {
-  created_at: DateTimeFieldUpdateOperationsInput
-  docs: DocumentUpdateManyWithoutUserInput
-  email: StringFieldUpdateOperationsInput
-  fname: NullableStringFieldUpdateOperationsInput
-  lname: NullableStringFieldUpdateOperationsInput
-  password: StringFieldUpdateOperationsInput
-  rule: EnumRuleFieldUpdateOperationsInput
-  updated_at: DateTimeFieldUpdateOperationsInput
-  username: StringFieldUpdateOperationsInput
 }
 
 input UserWhereUniqueInput {

@@ -5,10 +5,12 @@ import {
   enumType,
   stringArg,
   subscriptionField,
+  arg,
+  intArg,
 } from "@nexus/schema";
 import { withFilter } from "apollo-server-express";
 
-import bcrypt from "bcryptjs";
+import bcrypt, { compareSync } from "bcryptjs";
 
 export const Role = enumType({
   name: "Role",
@@ -43,7 +45,7 @@ export const MeQuery = queryType({
 });
 
 export const UserLogin = extendType({
-  type: "Query",
+  type: "Mutation",
   definition(t) {
     t.field("login", {
       type: "UserPayload",
@@ -114,10 +116,112 @@ export const createNewUser = extendType({
   },
 });
 
+export const adminUserCreation = extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("addNewUser", {
+      type: "String",
+      args: {
+        username: stringArg({ required: true }),
+        password: stringArg({ required: true }),
+        type: arg({ type: "Role", required: true, default: "VIEWER" }),
+      },
+      resolve: async (_root, args, { prisma, userId, req }) => {
+        const { username, password, type } = args;
+        const adminId: any = await userId(req);
+        const isAdmin = await prisma.user.findOne({ where: { id: adminId } });
+        const isUsernameExist = await prisma.user.findOne({
+          where: { username: username },
+        });
+        if (!isAdmin) {
+          throw new Error("authontication error to create user");
+        } else if (isUsernameExist) {
+          throw new Error("username already exiest");
+        } else if (isAdmin.rule !== "ADMIN") {
+          throw new Error("permission denied");
+        }
+
+        const hashedPass = await bcrypt.hashSync(password, 10);
+        const user = await prisma.user.create({
+          data: {
+            username,
+            password: hashedPass,
+            rule: type as any,
+            email: `archiveHandler${Date.now()}@app.io`,
+          },
+        });
+
+        return `user ${user.username} was created successfully!`;
+      },
+    });
+  },
+});
+
+export const adminUserUpdate = extendType({
+  type: "Mutation",
+  definition(t) {
+    t.field("updateUserFromAdmin", {
+      type: "String",
+      args: {
+        uid: intArg({ required: true }),
+        username: stringArg({ required: false }),
+        password: stringArg({ required: false }),
+        type: arg({ type: "Role", required: false }),
+        updateType: stringArg({ required: true }),
+      },
+      resolve: async (_root, args, { prisma, userId, req }) => {
+        const { username, password, type, uid, updateType }: any = args;
+        console.log(args);
+        const adminId: any = await userId(req);
+        const isAdmin = await prisma.user.findOne({ where: { id: adminId } });
+        const userToEdit = await prisma.user.findOne({ where: { id: uid } });
+
+        if (!isAdmin) {
+          throw new Error("تم رفض الطلب، الرجاء تسجيل الدخول");
+        } else if (isAdmin.rule !== "ADMIN") {
+          throw new Error("تم رفض الطلب");
+        } else if (!userToEdit) {
+          throw new Error("لا يوجد مستخدم!");
+        }
+
+        if (typeof updateType === "string") {
+          switch (updateType) {
+            case "username": {
+              await prisma.user.update({
+                where: { id: uid },
+                data: { username },
+              });
+              return "updated";
+            }
+            case "password": {
+              const newPassHash = await bcrypt.hashSync(password, 10);
+              await prisma.user.update({
+                where: { id: uid },
+                data: { password: newPassHash },
+              });
+              return "updated";
+            }
+            case "role": {
+              await prisma.user.update({
+                where: { id: uid },
+                data: { rule: type },
+              });
+              return "updated";
+            }
+            default:
+              return "nothing to update!";
+          }
+        }
+
+        return "nothing to update!";
+      },
+    });
+  },
+});
+
 export const UserMutation = extendType({
   type: "Mutation",
   definition(t) {
-    t.crud.updateOneUser();
     t.crud.deleteOneUser();
   },
 });

@@ -20,7 +20,7 @@ export const upload_proccessing = async (
   const { stream, filename, mimetype } = await args;
   const Extname = extname(filename);
   const newFilename = `${Date.now()}-arch${Extname}`;
-  const filePath = `${UPLOADS_FOLDER}/${newFilename}`;
+  const filePath = `${UPLOADS_FOLDER}/${filename}`;
 
   return new Promise((resolve, reject) => {
     stream

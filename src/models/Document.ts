@@ -11,6 +11,8 @@ import { upload_proccessing } from "../utils";
 import { TagClean } from "../helpers";
 import { DocumentPost } from "../helpers/enums";
 
+import { extname } from "path";
+
 export const Document = objectType({
   name: "Document",
   definition(t) {
@@ -65,19 +67,38 @@ export const CreateDocument = extendType({
       resolve: async (_root, args, { prisma, req, pubsub, userId }) => {
         const uid: any = await userId(req);
         const user = await prisma.user.findOne({ where: { id: uid } });
+
+        if (!user || user.rule === "VIEWER") {
+          throw new Error("not allowed!");
+        }
+
         let pathone = "";
         const { content, doc_date, doc_number, hashtag, doc_type, file } = args;
         if (file) {
           const { createReadStream, filename, mimetype } = await file;
           console.log("file", file.filename);
+          const file_extention = extname(filename);
+          const newFileBasedOnInfo = `${content.replace(
+            " ",
+            "_"
+          )}-${doc_date
+            .trim()
+            .split("/")
+            .join(".")}-${doc_number
+            .trim()
+            .replace(
+              "/",
+              "."
+            )}-${doc_type.trim()}-${Date.now()}${file_extention}`;
+          console.log("new file name", newFileBasedOnInfo);
+
           const didUploadFile = await upload_proccessing({
             stream: createReadStream(),
-            filename,
+            filename: newFileBasedOnInfo,
             mimetype,
           });
           if (didUploadFile) {
             pathone = `${req.protocol}://${req.headers.host}/docs/uploads/${didUploadFile.filename}`;
-            console.log(pathone);
           }
         }
         const exist_tags = await prisma.tag.findMany({});

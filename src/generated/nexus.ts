@@ -29,319 +29,19 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  AttachmentCreateManyWithoutDocInput: { // input type
-    connect?: NexusGenInputs['AttachmentWhereUniqueInput'][] | null; // [AttachmentWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['AttachmentCreateOrConnectWithoutDocumentInput'][] | null; // [AttachmentCreateOrConnectWithoutDocumentInput!]
-    create?: NexusGenInputs['AttachmentCreateWithoutDocInput'][] | null; // [AttachmentCreateWithoutDocInput!]
-  }
-  AttachmentCreateOrConnectWithoutDocumentInput: { // input type
-    create: NexusGenInputs['AttachmentCreateWithoutDocInput']; // AttachmentCreateWithoutDocInput!
-    where: NexusGenInputs['AttachmentWhereUniqueInput']; // AttachmentWhereUniqueInput!
-  }
-  AttachmentCreateWithoutDocInput: { // input type
-    created_at?: NexusGenScalars['DateTime'] | null; // DateTime
-    file_url?: string | null; // String
-    updated_at?: NexusGenScalars['DateTime'] | null; // DateTime
-  }
-  AttachmentScalarWhereInput: { // input type
-    AND?: NexusGenInputs['AttachmentScalarWhereInput'][] | null; // [AttachmentScalarWhereInput!]
-    created_at?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    docId?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    file_url?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
-    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    NOT?: NexusGenInputs['AttachmentScalarWhereInput'][] | null; // [AttachmentScalarWhereInput!]
-    OR?: NexusGenInputs['AttachmentScalarWhereInput'][] | null; // [AttachmentScalarWhereInput!]
-    updated_at?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-  }
-  AttachmentUpdateManyDataInput: { // input type
-    created_at?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    file_url?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
-    updated_at?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-  }
-  AttachmentUpdateManyWithWhereNestedInput: { // input type
-    data: NexusGenInputs['AttachmentUpdateManyDataInput']; // AttachmentUpdateManyDataInput!
-    where: NexusGenInputs['AttachmentScalarWhereInput']; // AttachmentScalarWhereInput!
-  }
-  AttachmentUpdateManyWithoutDocInput: { // input type
-    connect?: NexusGenInputs['AttachmentWhereUniqueInput'][] | null; // [AttachmentWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['AttachmentCreateOrConnectWithoutDocumentInput'][] | null; // [AttachmentCreateOrConnectWithoutDocumentInput!]
-    create?: NexusGenInputs['AttachmentCreateWithoutDocInput'][] | null; // [AttachmentCreateWithoutDocInput!]
-    delete?: NexusGenInputs['AttachmentWhereUniqueInput'][] | null; // [AttachmentWhereUniqueInput!]
-    deleteMany?: NexusGenInputs['AttachmentScalarWhereInput'][] | null; // [AttachmentScalarWhereInput!]
-    disconnect?: NexusGenInputs['AttachmentWhereUniqueInput'][] | null; // [AttachmentWhereUniqueInput!]
-    set?: NexusGenInputs['AttachmentWhereUniqueInput'][] | null; // [AttachmentWhereUniqueInput!]
-    update?: NexusGenInputs['AttachmentUpdateWithWhereUniqueWithoutDocInput'][] | null; // [AttachmentUpdateWithWhereUniqueWithoutDocInput!]
-    updateMany?: NexusGenInputs['AttachmentUpdateManyWithWhereNestedInput'][] | null; // [AttachmentUpdateManyWithWhereNestedInput!]
-    upsert?: NexusGenInputs['AttachmentUpsertWithWhereUniqueWithoutDocInput'][] | null; // [AttachmentUpsertWithWhereUniqueWithoutDocInput!]
-  }
-  AttachmentUpdateWithWhereUniqueWithoutDocInput: { // input type
-    data: NexusGenInputs['AttachmentUpdateWithoutDocDataInput']; // AttachmentUpdateWithoutDocDataInput!
-    where: NexusGenInputs['AttachmentWhereUniqueInput']; // AttachmentWhereUniqueInput!
-  }
-  AttachmentUpdateWithoutDocDataInput: { // input type
-    created_at?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    file_url?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
-    updated_at?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-  }
-  AttachmentUpsertWithWhereUniqueWithoutDocInput: { // input type
-    create: NexusGenInputs['AttachmentCreateWithoutDocInput']; // AttachmentCreateWithoutDocInput!
-    update: NexusGenInputs['AttachmentUpdateWithoutDocDataInput']; // AttachmentUpdateWithoutDocDataInput!
-    where: NexusGenInputs['AttachmentWhereUniqueInput']; // AttachmentWhereUniqueInput!
-  }
   AttachmentWhereUniqueInput: { // input type
     id?: number | null; // Int
-  }
-  DateTimeFieldUpdateOperationsInput: { // input type
-    set?: NexusGenScalars['DateTime'] | null; // DateTime
-  }
-  DateTimeFilter: { // input type
-    equals?: NexusGenScalars['DateTime'] | null; // DateTime
-    gt?: NexusGenScalars['DateTime'] | null; // DateTime
-    gte?: NexusGenScalars['DateTime'] | null; // DateTime
-    in?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
-    lt?: NexusGenScalars['DateTime'] | null; // DateTime
-    lte?: NexusGenScalars['DateTime'] | null; // DateTime
-    not?: NexusGenInputs['NestedDateTimeFilter'] | null; // NestedDateTimeFilter
-    notIn?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
-  }
-  DocumentCreateOrConnectWithoutUserInput: { // input type
-    create: NexusGenInputs['DocumentCreateWithoutUserInput']; // DocumentCreateWithoutUserInput!
-    where: NexusGenInputs['DocumentWhereUniqueInput']; // DocumentWhereUniqueInput!
-  }
-  DocumentCreateWithoutUserInput: { // input type
-    attachment?: NexusGenInputs['AttachmentCreateManyWithoutDocInput'] | null; // AttachmentCreateManyWithoutDocInput
-    content: string; // String!
-    created_at?: NexusGenScalars['DateTime'] | null; // DateTime
-    doc_date: string; // String!
-    doc_number: string; // String!
-    doc_type: string; // String!
-    file_url?: string | null; // String
-    tags?: NexusGenInputs['TagCreateManyWithoutDocInput'] | null; // TagCreateManyWithoutDocInput
-    updated_at?: NexusGenScalars['DateTime'] | null; // DateTime
-  }
-  DocumentScalarWhereInput: { // input type
-    AND?: NexusGenInputs['DocumentScalarWhereInput'][] | null; // [DocumentScalarWhereInput!]
-    content?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    created_at?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    doc_date?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    doc_number?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    doc_type?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    file_url?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
-    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    NOT?: NexusGenInputs['DocumentScalarWhereInput'][] | null; // [DocumentScalarWhereInput!]
-    OR?: NexusGenInputs['DocumentScalarWhereInput'][] | null; // [DocumentScalarWhereInput!]
-    updated_at?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    userId?: NexusGenInputs['IntFilter'] | null; // IntFilter
-  }
-  DocumentUpdateManyDataInput: { // input type
-    content?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    created_at?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    doc_date?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    doc_number?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    doc_type?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    file_url?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
-    updated_at?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-  }
-  DocumentUpdateManyWithWhereNestedInput: { // input type
-    data: NexusGenInputs['DocumentUpdateManyDataInput']; // DocumentUpdateManyDataInput!
-    where: NexusGenInputs['DocumentScalarWhereInput']; // DocumentScalarWhereInput!
-  }
-  DocumentUpdateManyWithoutUserInput: { // input type
-    connect?: NexusGenInputs['DocumentWhereUniqueInput'][] | null; // [DocumentWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['DocumentCreateOrConnectWithoutUserInput'][] | null; // [DocumentCreateOrConnectWithoutUserInput!]
-    create?: NexusGenInputs['DocumentCreateWithoutUserInput'][] | null; // [DocumentCreateWithoutUserInput!]
-    delete?: NexusGenInputs['DocumentWhereUniqueInput'][] | null; // [DocumentWhereUniqueInput!]
-    deleteMany?: NexusGenInputs['DocumentScalarWhereInput'][] | null; // [DocumentScalarWhereInput!]
-    disconnect?: NexusGenInputs['DocumentWhereUniqueInput'][] | null; // [DocumentWhereUniqueInput!]
-    set?: NexusGenInputs['DocumentWhereUniqueInput'][] | null; // [DocumentWhereUniqueInput!]
-    update?: NexusGenInputs['DocumentUpdateWithWhereUniqueWithoutUserInput'][] | null; // [DocumentUpdateWithWhereUniqueWithoutUserInput!]
-    updateMany?: NexusGenInputs['DocumentUpdateManyWithWhereNestedInput'][] | null; // [DocumentUpdateManyWithWhereNestedInput!]
-    upsert?: NexusGenInputs['DocumentUpsertWithWhereUniqueWithoutUserInput'][] | null; // [DocumentUpsertWithWhereUniqueWithoutUserInput!]
-  }
-  DocumentUpdateWithWhereUniqueWithoutUserInput: { // input type
-    data: NexusGenInputs['DocumentUpdateWithoutUserDataInput']; // DocumentUpdateWithoutUserDataInput!
-    where: NexusGenInputs['DocumentWhereUniqueInput']; // DocumentWhereUniqueInput!
-  }
-  DocumentUpdateWithoutUserDataInput: { // input type
-    attachment?: NexusGenInputs['AttachmentUpdateManyWithoutDocInput'] | null; // AttachmentUpdateManyWithoutDocInput
-    content?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    created_at?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    doc_date?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    doc_number?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    doc_type?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    file_url?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
-    tags?: NexusGenInputs['TagUpdateManyWithoutDocInput'] | null; // TagUpdateManyWithoutDocInput
-    updated_at?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-  }
-  DocumentUpsertWithWhereUniqueWithoutUserInput: { // input type
-    create: NexusGenInputs['DocumentCreateWithoutUserInput']; // DocumentCreateWithoutUserInput!
-    update: NexusGenInputs['DocumentUpdateWithoutUserDataInput']; // DocumentUpdateWithoutUserDataInput!
-    where: NexusGenInputs['DocumentWhereUniqueInput']; // DocumentWhereUniqueInput!
   }
   DocumentWhereUniqueInput: { // input type
     doc_number?: string | null; // String
     id?: number | null; // Int
   }
-  EnumRuleFieldUpdateOperationsInput: { // input type
-    set?: NexusGenEnums['Rule'] | null; // Rule
-  }
-  IntFilter: { // input type
-    equals?: number | null; // Int
-    gt?: number | null; // Int
-    gte?: number | null; // Int
-    in?: number[] | null; // [Int!]
-    lt?: number | null; // Int
-    lte?: number | null; // Int
-    not?: NexusGenInputs['NestedIntFilter'] | null; // NestedIntFilter
-    notIn?: number[] | null; // [Int!]
-  }
-  NestedDateTimeFilter: { // input type
-    equals?: NexusGenScalars['DateTime'] | null; // DateTime
-    gt?: NexusGenScalars['DateTime'] | null; // DateTime
-    gte?: NexusGenScalars['DateTime'] | null; // DateTime
-    in?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
-    lt?: NexusGenScalars['DateTime'] | null; // DateTime
-    lte?: NexusGenScalars['DateTime'] | null; // DateTime
-    not?: NexusGenInputs['NestedDateTimeFilter'] | null; // NestedDateTimeFilter
-    notIn?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
-  }
-  NestedIntFilter: { // input type
-    equals?: number | null; // Int
-    gt?: number | null; // Int
-    gte?: number | null; // Int
-    in?: number[] | null; // [Int!]
-    lt?: number | null; // Int
-    lte?: number | null; // Int
-    not?: NexusGenInputs['NestedIntFilter'] | null; // NestedIntFilter
-    notIn?: number[] | null; // [Int!]
-  }
-  NestedStringFilter: { // input type
-    contains?: string | null; // String
-    endsWith?: string | null; // String
-    equals?: string | null; // String
-    gt?: string | null; // String
-    gte?: string | null; // String
-    in?: string[] | null; // [String!]
-    lt?: string | null; // String
-    lte?: string | null; // String
-    not?: NexusGenInputs['NestedStringFilter'] | null; // NestedStringFilter
-    notIn?: string[] | null; // [String!]
-    startsWith?: string | null; // String
-  }
-  NestedStringNullableFilter: { // input type
-    contains?: string | null; // String
-    endsWith?: string | null; // String
-    equals?: string | null; // String
-    gt?: string | null; // String
-    gte?: string | null; // String
-    in?: string[] | null; // [String!]
-    lt?: string | null; // String
-    lte?: string | null; // String
-    not?: NexusGenInputs['NestedStringNullableFilter'] | null; // NestedStringNullableFilter
-    notIn?: string[] | null; // [String!]
-    startsWith?: string | null; // String
-  }
-  NullableStringFieldUpdateOperationsInput: { // input type
-    set?: string | null; // String
-  }
-  StringFieldUpdateOperationsInput: { // input type
-    set?: string | null; // String
-  }
-  StringFilter: { // input type
-    contains?: string | null; // String
-    endsWith?: string | null; // String
-    equals?: string | null; // String
-    gt?: string | null; // String
-    gte?: string | null; // String
-    in?: string[] | null; // [String!]
-    lt?: string | null; // String
-    lte?: string | null; // String
-    mode?: NexusGenEnums['QueryMode'] | null; // QueryMode
-    not?: NexusGenInputs['NestedStringFilter'] | null; // NestedStringFilter
-    notIn?: string[] | null; // [String!]
-    startsWith?: string | null; // String
-  }
-  StringNullableFilter: { // input type
-    contains?: string | null; // String
-    endsWith?: string | null; // String
-    equals?: string | null; // String
-    gt?: string | null; // String
-    gte?: string | null; // String
-    in?: string[] | null; // [String!]
-    lt?: string | null; // String
-    lte?: string | null; // String
-    mode?: NexusGenEnums['QueryMode'] | null; // QueryMode
-    not?: NexusGenInputs['NestedStringNullableFilter'] | null; // NestedStringNullableFilter
-    notIn?: string[] | null; // [String!]
-    startsWith?: string | null; // String
-  }
-  TagCreateManyWithoutDocInput: { // input type
-    connect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['TagCreateOrConnectWithoutDocumentInput'][] | null; // [TagCreateOrConnectWithoutDocumentInput!]
-    create?: NexusGenInputs['TagCreateWithoutDocInput'][] | null; // [TagCreateWithoutDocInput!]
-  }
-  TagCreateOrConnectWithoutDocumentInput: { // input type
-    create: NexusGenInputs['TagCreateWithoutDocInput']; // TagCreateWithoutDocInput!
-    where: NexusGenInputs['TagWhereUniqueInput']; // TagWhereUniqueInput!
-  }
-  TagCreateWithoutDocInput: { // input type
-    value: string; // String!
-  }
   TagInput: { // input type
     value: Array<string | null>; // [String]!
-  }
-  TagScalarWhereInput: { // input type
-    AND?: NexusGenInputs['TagScalarWhereInput'][] | null; // [TagScalarWhereInput!]
-    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    NOT?: NexusGenInputs['TagScalarWhereInput'][] | null; // [TagScalarWhereInput!]
-    OR?: NexusGenInputs['TagScalarWhereInput'][] | null; // [TagScalarWhereInput!]
-    value?: NexusGenInputs['StringFilter'] | null; // StringFilter
-  }
-  TagUpdateManyDataInput: { // input type
-    value?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-  }
-  TagUpdateManyWithWhereNestedInput: { // input type
-    data: NexusGenInputs['TagUpdateManyDataInput']; // TagUpdateManyDataInput!
-    where: NexusGenInputs['TagScalarWhereInput']; // TagScalarWhereInput!
-  }
-  TagUpdateManyWithoutDocInput: { // input type
-    connect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['TagCreateOrConnectWithoutDocumentInput'][] | null; // [TagCreateOrConnectWithoutDocumentInput!]
-    create?: NexusGenInputs['TagCreateWithoutDocInput'][] | null; // [TagCreateWithoutDocInput!]
-    delete?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
-    deleteMany?: NexusGenInputs['TagScalarWhereInput'][] | null; // [TagScalarWhereInput!]
-    disconnect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
-    set?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
-    update?: NexusGenInputs['TagUpdateWithWhereUniqueWithoutDocInput'][] | null; // [TagUpdateWithWhereUniqueWithoutDocInput!]
-    updateMany?: NexusGenInputs['TagUpdateManyWithWhereNestedInput'][] | null; // [TagUpdateManyWithWhereNestedInput!]
-    upsert?: NexusGenInputs['TagUpsertWithWhereUniqueWithoutDocInput'][] | null; // [TagUpsertWithWhereUniqueWithoutDocInput!]
-  }
-  TagUpdateWithWhereUniqueWithoutDocInput: { // input type
-    data: NexusGenInputs['TagUpdateWithoutDocDataInput']; // TagUpdateWithoutDocDataInput!
-    where: NexusGenInputs['TagWhereUniqueInput']; // TagWhereUniqueInput!
-  }
-  TagUpdateWithoutDocDataInput: { // input type
-    value?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-  }
-  TagUpsertWithWhereUniqueWithoutDocInput: { // input type
-    create: NexusGenInputs['TagCreateWithoutDocInput']; // TagCreateWithoutDocInput!
-    update: NexusGenInputs['TagUpdateWithoutDocDataInput']; // TagUpdateWithoutDocDataInput!
-    where: NexusGenInputs['TagWhereUniqueInput']; // TagWhereUniqueInput!
   }
   TagWhereUniqueInput: { // input type
     id?: number | null; // Int
     value?: string | null; // String
-  }
-  UserUpdateInput: { // input type
-    created_at?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    docs?: NexusGenInputs['DocumentUpdateManyWithoutUserInput'] | null; // DocumentUpdateManyWithoutUserInput
-    email?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    fname?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
-    lname?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
-    password?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
-    rule?: NexusGenInputs['EnumRuleFieldUpdateOperationsInput'] | null; // EnumRuleFieldUpdateOperationsInput
-    updated_at?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
-    username?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
   }
   UserWhereUniqueInput: { // input type
     email?: string | null; // String
@@ -351,7 +51,6 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
-  QueryMode: "default" | "insensitive"
   Role: "ADMIN" | "ROOT" | "USER" | "VIEWER"
   Rule: "ADMIN" | "USER" | "VIEWER"
 }
@@ -411,54 +110,11 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
-  AttachmentCreateManyWithoutDocInput: NexusGenInputs['AttachmentCreateManyWithoutDocInput'];
-  AttachmentCreateOrConnectWithoutDocumentInput: NexusGenInputs['AttachmentCreateOrConnectWithoutDocumentInput'];
-  AttachmentCreateWithoutDocInput: NexusGenInputs['AttachmentCreateWithoutDocInput'];
-  AttachmentScalarWhereInput: NexusGenInputs['AttachmentScalarWhereInput'];
-  AttachmentUpdateManyDataInput: NexusGenInputs['AttachmentUpdateManyDataInput'];
-  AttachmentUpdateManyWithWhereNestedInput: NexusGenInputs['AttachmentUpdateManyWithWhereNestedInput'];
-  AttachmentUpdateManyWithoutDocInput: NexusGenInputs['AttachmentUpdateManyWithoutDocInput'];
-  AttachmentUpdateWithWhereUniqueWithoutDocInput: NexusGenInputs['AttachmentUpdateWithWhereUniqueWithoutDocInput'];
-  AttachmentUpdateWithoutDocDataInput: NexusGenInputs['AttachmentUpdateWithoutDocDataInput'];
-  AttachmentUpsertWithWhereUniqueWithoutDocInput: NexusGenInputs['AttachmentUpsertWithWhereUniqueWithoutDocInput'];
   AttachmentWhereUniqueInput: NexusGenInputs['AttachmentWhereUniqueInput'];
-  DateTimeFieldUpdateOperationsInput: NexusGenInputs['DateTimeFieldUpdateOperationsInput'];
-  DateTimeFilter: NexusGenInputs['DateTimeFilter'];
-  DocumentCreateOrConnectWithoutUserInput: NexusGenInputs['DocumentCreateOrConnectWithoutUserInput'];
-  DocumentCreateWithoutUserInput: NexusGenInputs['DocumentCreateWithoutUserInput'];
-  DocumentScalarWhereInput: NexusGenInputs['DocumentScalarWhereInput'];
-  DocumentUpdateManyDataInput: NexusGenInputs['DocumentUpdateManyDataInput'];
-  DocumentUpdateManyWithWhereNestedInput: NexusGenInputs['DocumentUpdateManyWithWhereNestedInput'];
-  DocumentUpdateManyWithoutUserInput: NexusGenInputs['DocumentUpdateManyWithoutUserInput'];
-  DocumentUpdateWithWhereUniqueWithoutUserInput: NexusGenInputs['DocumentUpdateWithWhereUniqueWithoutUserInput'];
-  DocumentUpdateWithoutUserDataInput: NexusGenInputs['DocumentUpdateWithoutUserDataInput'];
-  DocumentUpsertWithWhereUniqueWithoutUserInput: NexusGenInputs['DocumentUpsertWithWhereUniqueWithoutUserInput'];
   DocumentWhereUniqueInput: NexusGenInputs['DocumentWhereUniqueInput'];
-  EnumRuleFieldUpdateOperationsInput: NexusGenInputs['EnumRuleFieldUpdateOperationsInput'];
-  IntFilter: NexusGenInputs['IntFilter'];
-  NestedDateTimeFilter: NexusGenInputs['NestedDateTimeFilter'];
-  NestedIntFilter: NexusGenInputs['NestedIntFilter'];
-  NestedStringFilter: NexusGenInputs['NestedStringFilter'];
-  NestedStringNullableFilter: NexusGenInputs['NestedStringNullableFilter'];
-  NullableStringFieldUpdateOperationsInput: NexusGenInputs['NullableStringFieldUpdateOperationsInput'];
-  StringFieldUpdateOperationsInput: NexusGenInputs['StringFieldUpdateOperationsInput'];
-  StringFilter: NexusGenInputs['StringFilter'];
-  StringNullableFilter: NexusGenInputs['StringNullableFilter'];
-  TagCreateManyWithoutDocInput: NexusGenInputs['TagCreateManyWithoutDocInput'];
-  TagCreateOrConnectWithoutDocumentInput: NexusGenInputs['TagCreateOrConnectWithoutDocumentInput'];
-  TagCreateWithoutDocInput: NexusGenInputs['TagCreateWithoutDocInput'];
   TagInput: NexusGenInputs['TagInput'];
-  TagScalarWhereInput: NexusGenInputs['TagScalarWhereInput'];
-  TagUpdateManyDataInput: NexusGenInputs['TagUpdateManyDataInput'];
-  TagUpdateManyWithWhereNestedInput: NexusGenInputs['TagUpdateManyWithWhereNestedInput'];
-  TagUpdateManyWithoutDocInput: NexusGenInputs['TagUpdateManyWithoutDocInput'];
-  TagUpdateWithWhereUniqueWithoutDocInput: NexusGenInputs['TagUpdateWithWhereUniqueWithoutDocInput'];
-  TagUpdateWithoutDocDataInput: NexusGenInputs['TagUpdateWithoutDocDataInput'];
-  TagUpsertWithWhereUniqueWithoutDocInput: NexusGenInputs['TagUpsertWithWhereUniqueWithoutDocInput'];
   TagWhereUniqueInput: NexusGenInputs['TagWhereUniqueInput'];
-  UserUpdateInput: NexusGenInputs['UserUpdateInput'];
   UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
-  QueryMode: NexusGenEnums['QueryMode'];
   Role: NexusGenEnums['Role'];
   Rule: NexusGenEnums['Rule'];
   String: NexusGenScalars['String'];
@@ -497,17 +153,18 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     addAttachment: NexusGenRootTypes['Attachment'] | null; // Attachment
+    addNewUser: string | null; // String
     createDocument: NexusGenRootTypes['Document']; // Document!
     createNewUser: NexusGenRootTypes['UserPayload'] | null; // UserPayload
     deleteDocment: NexusGenRootTypes['Document']; // Document!
     deleteOneUser: NexusGenRootTypes['User'] | null; // User
     deleteTag: boolean | null; // Boolean
-    updateOneUser: NexusGenRootTypes['User'] | null; // User
+    login: NexusGenRootTypes['UserPayload'] | null; // UserPayload
+    updateUserFromAdmin: string | null; // String
   }
   Query: { // field return type
     documents: NexusGenRootTypes['Document'][]; // [Document!]!
     helloworld: string | null; // String
-    login: NexusGenRootTypes['UserPayload'] | null; // UserPayload
     me: NexusGenRootTypes['User'] | null; // User
     search: Array<NexusGenRootTypes['Document'] | null> | null; // [Document]
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
@@ -559,6 +216,11 @@ export interface NexusGenArgTypes {
       docId: number; // Int!
       file?: NexusGenScalars['Upload'] | null; // Upload
     }
+    addNewUser: { // args
+      password: string; // String!
+      type: NexusGenEnums['Role']; // Role!
+      username: string; // String!
+    }
     createDocument: { // args
       content: string; // String!
       doc_date: string; // String!
@@ -581,9 +243,16 @@ export interface NexusGenArgTypes {
     deleteTag: { // args
       value?: string | null; // String
     }
-    updateOneUser: { // args
-      data: NexusGenInputs['UserUpdateInput']; // UserUpdateInput!
-      where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
+    login: { // args
+      password: string; // String!
+      username: string; // String!
+    }
+    updateUserFromAdmin: { // args
+      password?: string | null; // String
+      type?: NexusGenEnums['Role'] | null; // Role
+      uid: number; // Int!
+      updateType: string; // String!
+      username?: string | null; // String
     }
   }
   Query: {
@@ -592,10 +261,6 @@ export interface NexusGenArgTypes {
       before?: NexusGenInputs['DocumentWhereUniqueInput'] | null; // DocumentWhereUniqueInput
       first?: number | null; // Int
       last?: number | null; // Int
-    }
-    login: { // args
-      password: string; // String!
-      username: string; // String!
     }
     search: { // args
       query?: string | null; // String
@@ -638,9 +303,9 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "Attachment" | "Document" | "DocumentSub" | "Mutation" | "Query" | "Subscription" | "Tag" | "User" | "UserPayload";
 
-export type NexusGenInputNames = "AttachmentCreateManyWithoutDocInput" | "AttachmentCreateOrConnectWithoutDocumentInput" | "AttachmentCreateWithoutDocInput" | "AttachmentScalarWhereInput" | "AttachmentUpdateManyDataInput" | "AttachmentUpdateManyWithWhereNestedInput" | "AttachmentUpdateManyWithoutDocInput" | "AttachmentUpdateWithWhereUniqueWithoutDocInput" | "AttachmentUpdateWithoutDocDataInput" | "AttachmentUpsertWithWhereUniqueWithoutDocInput" | "AttachmentWhereUniqueInput" | "DateTimeFieldUpdateOperationsInput" | "DateTimeFilter" | "DocumentCreateOrConnectWithoutUserInput" | "DocumentCreateWithoutUserInput" | "DocumentScalarWhereInput" | "DocumentUpdateManyDataInput" | "DocumentUpdateManyWithWhereNestedInput" | "DocumentUpdateManyWithoutUserInput" | "DocumentUpdateWithWhereUniqueWithoutUserInput" | "DocumentUpdateWithoutUserDataInput" | "DocumentUpsertWithWhereUniqueWithoutUserInput" | "DocumentWhereUniqueInput" | "EnumRuleFieldUpdateOperationsInput" | "IntFilter" | "NestedDateTimeFilter" | "NestedIntFilter" | "NestedStringFilter" | "NestedStringNullableFilter" | "NullableStringFieldUpdateOperationsInput" | "StringFieldUpdateOperationsInput" | "StringFilter" | "StringNullableFilter" | "TagCreateManyWithoutDocInput" | "TagCreateOrConnectWithoutDocumentInput" | "TagCreateWithoutDocInput" | "TagInput" | "TagScalarWhereInput" | "TagUpdateManyDataInput" | "TagUpdateManyWithWhereNestedInput" | "TagUpdateManyWithoutDocInput" | "TagUpdateWithWhereUniqueWithoutDocInput" | "TagUpdateWithoutDocDataInput" | "TagUpsertWithWhereUniqueWithoutDocInput" | "TagWhereUniqueInput" | "UserUpdateInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "AttachmentWhereUniqueInput" | "DocumentWhereUniqueInput" | "TagInput" | "TagWhereUniqueInput" | "UserWhereUniqueInput";
 
-export type NexusGenEnumNames = "QueryMode" | "Role" | "Rule";
+export type NexusGenEnumNames = "Role" | "Rule";
 
 export type NexusGenInterfaceNames = never;
 
