@@ -17,26 +17,45 @@ export const AddAttachment = extendType({
   type: "Mutation",
   definition(t) {
     t.field("addAttachment", {
-      type: "Attachment",
+      type: "String",
       args: {
         docId: intArg({ required: true }),
-        file: arg({ type: "Upload" }),
+        file: arg({ type: "Upload", required: true }),
       },
-      resolve: async (_root, args, { prisma, req }) => {
+      resolve: async (_root, args, { prisma, req, userId }) => {
         let pathOfAttachment;
         try {
+          const uid: number = await userId(req);
           const { docId, file } = args;
+          const user = await prisma.user.findOne({ where: { id: uid } });
+          const doc = await prisma.document.findOne({ where: { id: docId } });
+
           const { createReadStream, filename, mimetype, encoding } = await file;
+          if (!user || user.rule === "VIEWER") {
+            throw new Error("غير مصرح لك");
+          } else if (!file) {
+            throw new Error("لا يوجد ملف لرفعه");
+          } else if (!doc) {
+            throw new Error(
+              "لا يمكن ارفاق ملف لهذه المعاملة لعدم وجودها مسبقاً"
+            );
+          }
+          const oldFileFolder = doc.file_url?.split("://")[1].split("/")[3];
+          const oldFileName = `مرفقات-${Date.now()}-${
+            doc.file_url?.split("://")[1].split("/")[4]
+          }`;
+
           const upload = await upload_proccessing({
             stream: createReadStream(),
-            filename,
+            filename: oldFileName!,
             mimetype,
+            foldername: oldFileFolder!,
           });
           if (!upload) {
             throw new Error("no attachment!");
           }
           pathOfAttachment = `${req.protocol}://${req.headers.host}/docs/uploads/${upload.filename}`;
-          const addFileToDocs = await prisma.attachment.create({
+          await prisma.attachment.create({
             data: {
               file_url: pathOfAttachment,
               doc: {
@@ -47,7 +66,7 @@ export const AddAttachment = extendType({
             },
           });
 
-          return addFileToDocs;
+          return "success";
         } catch (e) {
           throw new Error(e);
         }

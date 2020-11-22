@@ -11,7 +11,8 @@
       "strictPropertyInitialization": false,
       "sourceMap": true,
       "emitDecoratorMetadata": true,
-      "experimentalDecorators": true
+      "experimentalDecorators": true,
+      "skipLibCheck": true
     },
     "exclude": ["node_modules"],
     "include": ["./src/**/*.tsx", "./src/**/*.ts", "src/__tests__", "./src/**/*"]

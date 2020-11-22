@@ -1,6 +1,6 @@
 import { resolve } from "path";
 
-export const UPLOADS_FOLDER = resolve(__dirname, "..", "..", "uploads");
+export const UPLOADS_FOLDER = resolve("D:/server_uploades/");
 
 export enum DocumentPost {
   DOC_CHANNEL = "doc-channel",

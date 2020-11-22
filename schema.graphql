@@ -38,20 +38,27 @@ type DocumentSub {
   mutation: String
 }
 
+input DocumentUpdatedByAdminInput {
+  content: String
+  doc_date: String
+  doc_number: String
+}
+
 input DocumentWhereUniqueInput {
   doc_number: String
   id: Int
 }
 
 type Mutation {
-  addAttachment(docId: Int!, file: Upload): Attachment
+  addAttachment(docId: Int!, file: Upload!): String
   addNewUser(password: String!, type: Role! = VIEWER, username: String!): String
-  createDocument(content: String!, doc_date: String!, doc_number: String!, doc_type: String!, file: Upload, hashtag: TagInput! = {value: ["new"]}): Document!
-  createNewUser(email: String!, password: String!, username: String!): UserPayload
+  createDocument(content: String!, doc_date: String!, doc_folder: String! = "عام", doc_number: String!, doc_type: String!, file: Upload, hashtag: TagInput! = {value: ["new"]}): Document!
+  createNewUser(email: String!, password: String!, type: Role! = VIEWER, username: String!): UserPayload
   deleteDocment(id: Int!): Document!
   deleteOneUser(where: UserWhereUniqueInput!): User
   deleteTag(value: String): Boolean
   login(password: String!, username: String!): UserPayload
+  updateDocument(data: DocumentUpdatedByAdminInput, doc_id: Int!): String
   updateUserFromAdmin(password: String, type: Role, uid: Int!, updateType: String!, username: String): String
 }
 

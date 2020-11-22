@@ -6,10 +6,11 @@
   "author": "saleh jarad",
   "license": "MIT",
   "scripts": {
-    "start": "node dist/server",
+    "start": "node dist/src/server",
     "clean": "rm -rf dist && rm ./schema.graphql && rm -rf src/generated && echo \"\n cleaning done!\" ",
     "build": "npm -s run clean && npm -s run generate && tsc",
     "generate": "npm -s run generate:prisma && npm -s run generate:nexus",
+    "before:generate": "npm run migrate:save --name production && npm run migrate:up",
     "generate:prisma": "prisma generate",
     "migrate:save": "prisma migrate save --experimental",
     "migrate:up": "prisma migrate up --experimental",

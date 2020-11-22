@@ -97,16 +97,18 @@ export const createNewUser = extendType({
       args: {
         username: stringArg({ required: true }),
         email: stringArg({ required: true }),
+        type: arg({ type: "Role", required: true, default: "VIEWER" }),
         password: stringArg({ required: true }),
       },
       resolve: async (_root, args, { prisma, makeToken }) => {
-        const { username, email, password } = args;
+        const { username, email, password, type } = args;
         const hashedPass = await bcrypt.hashSync(password, 10);
         const user = await prisma.user.create({
           data: {
             username,
             email,
             password: hashedPass,
+            rule: type as any,
           },
         });
         const token = await makeToken(user?.id);

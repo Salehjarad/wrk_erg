@@ -26,15 +26,17 @@ model User {
 }
 
 model Document {
-  id         Int     @id @default(autoincrement())
-  content    String
-  doc_number String  @unique
-  doc_date   String
-  doc_type   String
-  user       User    @relation(fields: [userId], references: [id])
-  userId     Int
-  tags       Tag[]   @relation(references: [id])
-  file_url   String?
+  id          Int     @id @default(autoincrement())
+  content     String
+  doc_number  String  @unique
+  doc_date    String
+  doc_type    String
+  folder_name String?
+  filename    String?
+  user        User    @relation(fields: [userId], references: [id])
+  userId      Int
+  tags        Tag[]   @relation(references: [id])
+  file_url    String?
 
   attachment Attachment[]
   created_at DateTime     @default(now())
@@ -42,12 +44,12 @@ model Document {
 }
 
 model Attachment {
-  id         Int      @id @default(autoincrement())
+  docId      Int?
+  id         Int       @id @default(autoincrement())
   file_url   String?
-  doc        Document @relation(fields: [docId], references: [id])
-  docId      Int
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  doc        Document? @relation(fields: [docId], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
 }
 
 model Tag {

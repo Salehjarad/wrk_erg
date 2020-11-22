@@ -32,6 +32,11 @@ export interface NexusGenInputs {
   AttachmentWhereUniqueInput: { // input type
     id?: number | null; // Int
   }
+  DocumentUpdatedByAdminInput: { // input type
+    content?: string | null; // String
+    doc_date?: string | null; // String
+    doc_number?: string | null; // String
+  }
   DocumentWhereUniqueInput: { // input type
     doc_number?: string | null; // String
     id?: number | null; // Int
@@ -111,6 +116,7 @@ export interface NexusGenRootTypes {
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
   AttachmentWhereUniqueInput: NexusGenInputs['AttachmentWhereUniqueInput'];
+  DocumentUpdatedByAdminInput: NexusGenInputs['DocumentUpdatedByAdminInput'];
   DocumentWhereUniqueInput: NexusGenInputs['DocumentWhereUniqueInput'];
   TagInput: NexusGenInputs['TagInput'];
   TagWhereUniqueInput: NexusGenInputs['TagWhereUniqueInput'];
@@ -152,7 +158,7 @@ export interface NexusGenFieldTypes {
     mutation: string | null; // String
   }
   Mutation: { // field return type
-    addAttachment: NexusGenRootTypes['Attachment'] | null; // Attachment
+    addAttachment: string | null; // String
     addNewUser: string | null; // String
     createDocument: NexusGenRootTypes['Document']; // Document!
     createNewUser: NexusGenRootTypes['UserPayload'] | null; // UserPayload
@@ -160,6 +166,7 @@ export interface NexusGenFieldTypes {
     deleteOneUser: NexusGenRootTypes['User'] | null; // User
     deleteTag: boolean | null; // Boolean
     login: NexusGenRootTypes['UserPayload'] | null; // UserPayload
+    updateDocument: string | null; // String
     updateUserFromAdmin: string | null; // String
   }
   Query: { // field return type
@@ -214,7 +221,7 @@ export interface NexusGenArgTypes {
   Mutation: {
     addAttachment: { // args
       docId: number; // Int!
-      file?: NexusGenScalars['Upload'] | null; // Upload
+      file: NexusGenScalars['Upload']; // Upload!
     }
     addNewUser: { // args
       password: string; // String!
@@ -224,6 +231,7 @@ export interface NexusGenArgTypes {
     createDocument: { // args
       content: string; // String!
       doc_date: string; // String!
+      doc_folder: string; // String!
       doc_number: string; // String!
       doc_type: string; // String!
       file?: NexusGenScalars['Upload'] | null; // Upload
@@ -232,6 +240,7 @@ export interface NexusGenArgTypes {
     createNewUser: { // args
       email: string; // String!
       password: string; // String!
+      type: NexusGenEnums['Role']; // Role!
       username: string; // String!
     }
     deleteDocment: { // args
@@ -246,6 +255,10 @@ export interface NexusGenArgTypes {
     login: { // args
       password: string; // String!
       username: string; // String!
+    }
+    updateDocument: { // args
+      data?: NexusGenInputs['DocumentUpdatedByAdminInput'] | null; // DocumentUpdatedByAdminInput
+      doc_id: number; // Int!
     }
     updateUserFromAdmin: { // args
       password?: string | null; // String
@@ -303,7 +316,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "Attachment" | "Document" | "DocumentSub" | "Mutation" | "Query" | "Subscription" | "Tag" | "User" | "UserPayload";
 
-export type NexusGenInputNames = "AttachmentWhereUniqueInput" | "DocumentWhereUniqueInput" | "TagInput" | "TagWhereUniqueInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "AttachmentWhereUniqueInput" | "DocumentUpdatedByAdminInput" | "DocumentWhereUniqueInput" | "TagInput" | "TagWhereUniqueInput" | "UserWhereUniqueInput";
 
 export type NexusGenEnumNames = "Role" | "Rule";
 

@@ -17,7 +17,7 @@ export const makeToken = (userId: number): Promise<string> => {
   });
 };
 
-export const userId = (req: Request) => {
+export const userId = (req: Request): Promise<number> => {
   return new Promise((resolve, reject) => {
     const authorization = req.headers.authorization;
     if (!authorization) {
