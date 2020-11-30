@@ -8,6 +8,8 @@ services:
       - ./prisma/.env
     build: .
     container_name: archive-server
+    volumes:
+      - "D:/server_uploades:/usr/app/server_uploades"
     depends_on:
       - db
     links:

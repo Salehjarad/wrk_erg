@@ -14,7 +14,6 @@ import { unlinkSync, existsSync } from "fs";
 
 import { extname } from "path";
 import { UPLOADS_FOLDER } from "../helpers/enums";
-import { before } from "lodash";
 
 const deleteFileSync = async (path: any) => {
   if (await existsSync(path)) {
@@ -34,16 +33,21 @@ export const Document = objectType({
     t.model.user();
     t.model.userId();
     t.model.tags({ type: "Tag" });
+    t.model.folder_name();
+    t.model.filename();
     t.model.attachment({ type: "Attachment" });
   },
 });
 
-export const Hello = extendType({
+export const DocSize = extendType({
   type: "Query",
   definition(t) {
-    t.field("helloworld", {
-      type: "String",
-      resolve: () => "hello world",
+    t.field("doc_count", {
+      type: "Int",
+      nullable: true,
+      resolve: async (_root, _args, { prisma }) => {
+        return prisma.document.count({});
+      },
     });
   },
 });
@@ -55,11 +59,27 @@ export const TagsInput = inputObjectType({
   },
 });
 
+export const ResponseError = objectType({
+  name: "ResponseError",
+  definition(t) {
+    t.string("field");
+    t.string("message");
+  },
+});
+
+export const CreateDocumentResponse = objectType({
+  name: "CreateDocumentResponse",
+  definition(t) {
+    t.field("document", { type: "Document", nullable: true }),
+      t.list.field("errors", { type: "ResponseError", nullable: true });
+  },
+});
+
 export const CreateDocument = extendType({
   type: "Mutation",
   definition(t) {
     t.field("createDocument", {
-      type: "Document",
+      type: "CreateDocumentResponse",
       nullable: false,
       args: {
         content: stringArg({ required: true }),
@@ -75,24 +95,45 @@ export const CreateDocument = extendType({
         file: arg({ type: "Upload", required: false }),
       },
       resolve: async (_root, args, { prisma, req, pubsub, userId }) => {
-        const uid: any = await userId(req);
-        const user = await prisma.user.findOne({ where: { id: uid } });
-
-        if (!user || user.rule === "VIEWER") {
-          throw new Error("not allowed!");
-        }
-
+        let errors: { field: string; message: string }[] | null = [];
         let pathone = "";
-        const {
-          content,
-          doc_date,
-          doc_number,
-          hashtag,
-          doc_type,
-          file,
-          doc_folder,
-        } = args;
-        if (file) {
+        try {
+          const uid: any = await userId(req);
+          const {
+            content,
+            doc_date,
+            doc_number,
+            hashtag,
+            doc_type,
+            file,
+            doc_folder,
+          } = args;
+
+          const user = await prisma.user.findOne({ where: { id: uid } });
+          const oldDocument = await prisma.document.findOne({
+            where: { doc_number: doc_number },
+          });
+          if (!user || user.rule === "VIEWER") {
+            errors = [{ field: "user", message: "غير مسموح" }];
+            return { document: null, errors: errors };
+          }
+
+          if (oldDocument) {
+            errors = [
+              ...errors,
+              { field: "doc_number", message: "يوجد ملف بهذا الرقم مسبقاً" },
+            ];
+            return { document: null, errors: errors };
+          }
+
+          if (!file) {
+            errors = [
+              ...errors,
+              { field: "doc_info", message: "يجب إرفاق ملف" },
+            ];
+            return { document: null, errors: errors };
+          }
+
           const { createReadStream, filename, mimetype } = await file;
           console.log("file", file.filename);
           const file_extention = extname(filename);
@@ -115,35 +156,43 @@ export const CreateDocument = extendType({
             mimetype,
             foldername: doc_folder,
           });
+
           if (didUploadFile) {
             pathone = `${req.protocol}://${req.headers.host}/docs/uploads/${didUploadFile.filename}`;
           }
-        }
-        const exist_tags = await prisma.tag.findMany({});
-        const tags = await TagClean(hashtag, exist_tags);
-        // remove me
-        console.log("filepath:", pathone);
+          const exist_tags = await prisma.tag.findMany({});
+          const tags = await TagClean(hashtag, exist_tags);
 
-        const newPost = await prisma.document.create({
-          data: {
-            content,
-            doc_number,
-            doc_date,
-            doc_type,
-            file_url: pathone,
-            user: {
-              connect: {
-                id: uid,
+          const newPost = await prisma.document.create({
+            data: {
+              content,
+              doc_number,
+              doc_date,
+              doc_type,
+              folder_name: doc_folder,
+              filename: newFileBasedOnInfo,
+              file_url: pathone,
+              user: {
+                connect: {
+                  id: uid,
+                },
               },
+              tags,
             },
-            tags,
-          },
-        });
-        await pubsub.publish(DocumentPost.DOC_CHANNEL, {
-          mutation: DocumentPost.ADDED,
-          doc: newPost,
-        });
-        return newPost;
+          });
+          await pubsub.publish("count", await prisma.document.count({}));
+          await pubsub.publish(DocumentPost.DOC_CHANNEL, {
+            mutation: DocumentPost.ADDED,
+            doc: newPost,
+          });
+          return { document: newPost, errors: null };
+        } catch (error) {
+          console.log(error);
+          return {
+            document: null,
+            errors: [{ field: "error type", message: "يوجد خطاء عام" }],
+          };
+        }
       },
     });
   },
@@ -230,13 +279,13 @@ export const DeleteDocument = extendType({
         document.attachment.forEach(async (v) => {
           const folderName = v.file_url?.split("://")[1].split("/")[3];
           const fileName = v.file_url?.split("://")[1].split("/")[4];
-          const fileToDelete = `${UPLOADS_FOLDER}\\${folderName}\\${fileName}`;
+          const fileToDelete = `${UPLOADS_FOLDER}/${folderName}/${fileName}`;
           await deleteFileSync(fileToDelete);
         });
 
         const folderName = document.file_url?.split("://")[1].split("/")[3];
         const fileName = document.file_url?.split("://")[1].split("/")[4];
-        const fileToDelete = `${UPLOADS_FOLDER}\\${folderName}\\${fileName}`;
+        const fileToDelete = `${UPLOADS_FOLDER}/${folderName}/${fileName}`;
         await deleteFileSync(fileToDelete);
 
         await prisma.attachment.deleteMany({ where: { docId: document.id } });
@@ -320,4 +369,12 @@ export const DocumentSubscrbtion = subscriptionField("document", {
     return pubsub.asyncIterator(DocumentPost.DOC_CHANNEL);
   },
   resolve: (payload: any) => payload,
+});
+
+export const DocumentCountSub = subscriptionField("count", {
+  type: "Int",
+  subscribe: async (_root, _args, { pubsub }) => {
+    return pubsub.asyncIterator("count");
+  },
+  resolve: (payload) => payload,
 });

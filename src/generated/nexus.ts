@@ -73,10 +73,14 @@ export interface NexusGenScalars {
 export interface NexusGenRootTypes {
   Attachment: { // root type
     created_at: NexusGenScalars['DateTime']; // DateTime!
-    docId: number; // Int!
+    docId?: number | null; // Int
     file_url?: string | null; // String
     id: number; // Int!
     updated_at: NexusGenScalars['DateTime']; // DateTime!
+  }
+  CreateDocumentResponse: { // root type
+    document?: NexusGenRootTypes['Document'] | null; // Document
+    errors?: Array<NexusGenRootTypes['ResponseError'] | null> | null; // [ResponseError]
   }
   Document: { // root type
     content: string; // String!
@@ -84,6 +88,8 @@ export interface NexusGenRootTypes {
     doc_number: string; // String!
     doc_type: string; // String!
     file_url?: string | null; // String
+    filename?: string | null; // String
+    folder_name?: string | null; // String
     id: number; // Int!
     userId: number; // Int!
   }
@@ -93,6 +99,10 @@ export interface NexusGenRootTypes {
   }
   Mutation: {};
   Query: {};
+  ResponseError: { // root type
+    field?: string | null; // String
+    message?: string | null; // String
+  }
   Subscription: {};
   Tag: { // root type
     id: number; // Int!
@@ -135,11 +145,15 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 export interface NexusGenFieldTypes {
   Attachment: { // field return type
     created_at: NexusGenScalars['DateTime']; // DateTime!
-    doc: NexusGenRootTypes['Document']; // Document!
-    docId: number; // Int!
+    doc: NexusGenRootTypes['Document'] | null; // Document
+    docId: number | null; // Int
     file_url: string | null; // String
     id: number; // Int!
     updated_at: NexusGenScalars['DateTime']; // DateTime!
+  }
+  CreateDocumentResponse: { // field return type
+    document: NexusGenRootTypes['Document'] | null; // Document
+    errors: Array<NexusGenRootTypes['ResponseError'] | null> | null; // [ResponseError]
   }
   Document: { // field return type
     attachment: NexusGenRootTypes['Attachment'][]; // [Attachment!]!
@@ -148,6 +162,8 @@ export interface NexusGenFieldTypes {
     doc_number: string; // String!
     doc_type: string; // String!
     file_url: string | null; // String
+    filename: string | null; // String
+    folder_name: string | null; // String
     id: number; // Int!
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
     user: NexusGenRootTypes['User']; // User!
@@ -160,7 +176,7 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     addAttachment: string | null; // String
     addNewUser: string | null; // String
-    createDocument: NexusGenRootTypes['Document']; // Document!
+    createDocument: NexusGenRootTypes['CreateDocumentResponse']; // CreateDocumentResponse!
     createNewUser: NexusGenRootTypes['UserPayload'] | null; // UserPayload
     deleteDocment: NexusGenRootTypes['Document']; // Document!
     deleteOneUser: NexusGenRootTypes['User'] | null; // User
@@ -170,14 +186,19 @@ export interface NexusGenFieldTypes {
     updateUserFromAdmin: string | null; // String
   }
   Query: { // field return type
+    doc_count: number | null; // Int
     documents: NexusGenRootTypes['Document'][]; // [Document!]!
-    helloworld: string | null; // String
     me: NexusGenRootTypes['User'] | null; // User
     search: Array<NexusGenRootTypes['Document'] | null> | null; // [Document]
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
     users: NexusGenRootTypes['User'][]; // [User!]!
   }
+  ResponseError: { // field return type
+    field: string | null; // String
+    message: string | null; // String
+  }
   Subscription: { // field return type
+    count: number | null; // Int
     document: NexusGenRootTypes['DocumentSub'] | null; // DocumentSub
     live: string | null; // String
   }
@@ -314,7 +335,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Attachment" | "Document" | "DocumentSub" | "Mutation" | "Query" | "Subscription" | "Tag" | "User" | "UserPayload";
+export type NexusGenObjectNames = "Attachment" | "CreateDocumentResponse" | "Document" | "DocumentSub" | "Mutation" | "Query" | "ResponseError" | "Subscription" | "Tag" | "User" | "UserPayload";
 
 export type NexusGenInputNames = "AttachmentWhereUniqueInput" | "DocumentUpdatedByAdminInput" | "DocumentWhereUniqueInput" | "TagInput" | "TagWhereUniqueInput" | "UserWhereUniqueInput";
 

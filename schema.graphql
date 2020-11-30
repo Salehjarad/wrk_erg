@@ -4,8 +4,8 @@
 
 type Attachment {
   created_at: DateTime!
-  doc: Document!
-  docId: Int!
+  doc: Document
+  docId: Int
   file_url: String
   id: Int!
   updated_at: DateTime!
@@ -13,6 +13,11 @@ type Attachment {
 
 input AttachmentWhereUniqueInput {
   id: Int
+}
+
+type CreateDocumentResponse {
+  document: Document
+  errors: [ResponseError]
 }
 
 """
@@ -27,6 +32,8 @@ type Document {
   doc_number: String!
   doc_type: String!
   file_url: String
+  filename: String
+  folder_name: String
   id: Int!
   tags(after: TagWhereUniqueInput, before: TagWhereUniqueInput, first: Int, last: Int): [Tag!]!
   user: User!
@@ -52,7 +59,7 @@ input DocumentWhereUniqueInput {
 type Mutation {
   addAttachment(docId: Int!, file: Upload!): String
   addNewUser(password: String!, type: Role! = VIEWER, username: String!): String
-  createDocument(content: String!, doc_date: String!, doc_folder: String! = "عام", doc_number: String!, doc_type: String!, file: Upload, hashtag: TagInput! = {value: ["new"]}): Document!
+  createDocument(content: String!, doc_date: String!, doc_folder: String! = "عام", doc_number: String!, doc_type: String!, file: Upload, hashtag: TagInput! = {value: ["new"]}): CreateDocumentResponse!
   createNewUser(email: String!, password: String!, type: Role! = VIEWER, username: String!): UserPayload
   deleteDocment(id: Int!): Document!
   deleteOneUser(where: UserWhereUniqueInput!): User
@@ -63,12 +70,17 @@ type Mutation {
 }
 
 type Query {
+  doc_count: Int
   documents(after: DocumentWhereUniqueInput, before: DocumentWhereUniqueInput, first: Int, last: Int): [Document!]!
-  helloworld: String
   me: User
   search(query: String): [Document]
   tags(after: TagWhereUniqueInput, before: TagWhereUniqueInput, first: Int, last: Int): [Tag!]!
   users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+}
+
+type ResponseError {
+  field: String
+  message: String
 }
 
 enum Role {
@@ -85,6 +97,7 @@ enum Rule {
 }
 
 type Subscription {
+  count: Int
   document: DocumentSub
   live: String
 }
