@@ -56,6 +56,13 @@ input DocumentWhereUniqueInput {
   id: Int
 }
 
+type Logs {
+  created_at: DateTime!
+  id: Int!
+  message: String!
+  type: String!
+}
+
 type Mutation {
   addAttachment(docId: Int!, file: Upload!): String
   addNewUser(password: String!, type: Role! = VIEWER, username: String!): String
@@ -72,6 +79,7 @@ type Mutation {
 type Query {
   doc_count: Int
   documents(after: DocumentWhereUniqueInput, before: DocumentWhereUniqueInput, first: Int, last: Int): [Document!]!
+  logs: [Logs]
   me: User
   search(query: String): [Document]
   tags(after: TagWhereUniqueInput, before: TagWhereUniqueInput, first: Int, last: Int): [Tag!]!
@@ -92,6 +100,7 @@ enum Role {
 
 enum Rule {
   ADMIN
+  ROOT
   USER
   VIEWER
 }
@@ -100,6 +109,7 @@ type Subscription {
   count: Int
   document: DocumentSub
   live: String
+  logger: Logs
 }
 
 type Tag {

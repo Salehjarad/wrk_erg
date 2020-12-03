@@ -21,6 +21,17 @@ const deleteFileSync = async (path: any) => {
   }
 };
 
+const LOGGER = "LOGGER";
+
+const logsHandler = async (type: any, message: any, prisma: any) => {
+  return await prisma.logs.create({
+    data: {
+      type: type,
+      message: message,
+    },
+  });
+};
+
 export const Document = objectType({
   name: "Document",
   definition(t) {
@@ -94,21 +105,20 @@ export const CreateDocument = extendType({
         }),
         file: arg({ type: "Upload", required: false }),
       },
-      resolve: async (_root, args, { prisma, req, pubsub, userId }) => {
+      resolve: async (_root, args, { prisma, req, pubsub, userId, logger }) => {
         let errors: { field: string; message: string }[] | null = [];
         let pathone = "";
+        const uid: any = await userId(req);
+        const {
+          content,
+          doc_date,
+          doc_number,
+          hashtag,
+          doc_type,
+          file,
+          doc_folder,
+        } = args;
         try {
-          const uid: any = await userId(req);
-          const {
-            content,
-            doc_date,
-            doc_number,
-            hashtag,
-            doc_type,
-            file,
-            doc_folder,
-          } = args;
-
           const user = await prisma.user.findOne({ where: { id: uid } });
           const oldDocument = await prisma.document.findOne({
             where: { doc_number: doc_number },
@@ -123,6 +133,14 @@ export const CreateDocument = extendType({
               ...errors,
               { field: "doc_number", message: "يوجد ملف بهذا الرقم مسبقاً" },
             ];
+
+            const log = logsHandler(
+              "error",
+              `محاولة إدخال ملف موجود مسبقاً من المستخدم ${user.username}`,
+              prisma
+            );
+            pubsub.publish(LOGGER, log);
+
             return { document: null, errors: errors };
           }
 
@@ -131,18 +149,28 @@ export const CreateDocument = extendType({
               ...errors,
               { field: "doc_info", message: "يجب إرفاق ملف" },
             ];
+            const log = logsHandler(
+              "error",
+              `محاولة إدخال ملف دون إرفاقه من المستخدم ${user.username}`,
+              prisma
+            );
+            pubsub.publish(LOGGER, log);
             return { document: null, errors: errors };
           }
 
           const { createReadStream, filename, mimetype } = await file;
-          console.log("file", file.filename);
+          // console.log("file", file.filename);
+          logger.info("name", filename);
           const file_extention = extname(filename);
+          const tempNameForNow = `${Date.now()}${file_extention}`;
           const newFileBasedOnInfo = `${content
             .trim()
             .split(" ")
             .join("_")}-${doc_date
             .trim()
             .split("/")
+            .join(".")
+            .split("\\")
             .join(".")}-${doc_number
             .trim()
             .replace(
@@ -152,7 +180,7 @@ export const CreateDocument = extendType({
 
           const didUploadFile = await upload_proccessing({
             stream: createReadStream(),
-            filename: newFileBasedOnInfo,
+            filename: tempNameForNow,
             mimetype,
             foldername: doc_folder,
           });
@@ -170,7 +198,7 @@ export const CreateDocument = extendType({
               doc_date,
               doc_type,
               folder_name: doc_folder,
-              filename: newFileBasedOnInfo,
+              filename: tempNameForNow,
               file_url: pathone,
               user: {
                 connect: {
@@ -185,9 +213,23 @@ export const CreateDocument = extendType({
             mutation: DocumentPost.ADDED,
             doc: newPost,
           });
+          const log = logsHandler(
+            "info",
+            `تم إدخال الملف رقم ${newPost.doc_number} بنجاح من المستخدم ${user.username}`,
+            prisma
+          );
+          pubsub.publish(LOGGER, log);
+          logger.warn("document id", newPost.doc_number);
+
           return { document: newPost, errors: null };
         } catch (error) {
-          console.log(error);
+          logger.error(error);
+          const log = logsHandler(
+            "error",
+            `خطاء في إدخال الملف رقم ${doc_number}: ${error.message}`,
+            prisma
+          );
+          pubsub.publish(LOGGER, log);
           return {
             document: null,
             errors: [{ field: "error type", message: "يوجد خطاء عام" }],
@@ -217,7 +259,7 @@ export const UpdateDocumentByAdminAndUser = extendType({
         doc_id: intArg({ required: true }),
         data: arg({ type: "DocumentUpdatedByAdminInput" }),
       },
-      resolve: async (_root, args, { prisma, userId, req }) => {
+      resolve: async (_root, args, { prisma, userId, req, pubsub }) => {
         const { doc_id, data } = args;
         const uid = await userId(req);
         const userWhoUpdate = await prisma.user.findOne({ where: { id: uid } });
@@ -231,6 +273,12 @@ export const UpdateDocumentByAdminAndUser = extendType({
             where: { doc_number: data?.doc_number! },
           });
           if (isDocNumberExist) {
+            const log = logsHandler(
+              "error",
+              `محاولة إدخال معاملة مسبقة رقم ${isDocNumberExist.doc_number} من المستخدم ${userWhoUpdate.username}`,
+              prisma
+            );
+            pubsub.publish(LOGGER, log);
             throw new Error("يوجد معاملة بهذا الرقم مسبقاً: تأكد من إدخالك");
           }
         }
@@ -244,8 +292,21 @@ export const UpdateDocumentByAdminAndUser = extendType({
         });
 
         if (updateDocumentNow) {
+          const log = logsHandler(
+            "info",
+            `تم تحديث الملف رقم ${updateDocumentNow.doc_number} بنجاح من المستخدم ${userWhoUpdate.username}`,
+            prisma
+          );
+          pubsub.publish(LOGGER, log);
           return "success";
         }
+
+        const log = logsHandler(
+          "warning",
+          `مشكلة في تحديث الملف من قبل المستخدم ${userWhoUpdate.username}`,
+          prisma
+        );
+        pubsub.publish(LOGGER, log);
 
         return "somthing went wrong!";
       },
@@ -297,6 +358,14 @@ export const DeleteDocument = extendType({
           mutation: DocumentPost.DELETED,
           doc: holdeDocumentInfo[0],
         });
+        const log = logsHandler(
+          "warning",
+          `تم حذف المعاملة رقم ${
+            holdeDocumentInfo[0].doc_number || "0000"
+          } من قبل المستخدم ${user?.username}`,
+          prisma
+        );
+        pubsub.publish(LOGGER, log);
         console.log(holdeDocumentInfo[0]);
         return holdeDocumentInfo[0];
       },

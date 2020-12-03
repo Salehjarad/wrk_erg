@@ -24,6 +24,10 @@ app.use(
 );
 
 app.use("/docs/uploads/", express.static(UPLOADS_FOLDER));
+
+app.get("/online", (req, res, next) => {
+  res.json({ online: true }).status(200);
+});
 const server = createServer(app);
 const apollo = new ApolloServer({
   schema,

@@ -1,7 +1,13 @@
 import { resolve } from "path";
 
-export const UPLOADS_FOLDER = resolve("D:\\server_uploades\\");
-// export const UPLOADS_FOLDER = resolve("/usr/app/server_uploades/");
+let upload_folder;
+if (process.env.NODE_ENV === "production") {
+  upload_folder = resolve("/usr/app/server_uploades/");
+} else {
+  upload_folder = resolve("D:\\server_uploades\\");
+}
+
+export const UPLOADS_FOLDER = upload_folder;
 
 export enum DocumentPost {
   DOC_CHANNEL = "doc-channel",

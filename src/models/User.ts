@@ -8,9 +8,10 @@ import {
   arg,
   intArg,
 } from "@nexus/schema";
-import { withFilter } from "apollo-server-express";
 
-import bcrypt, { compareSync } from "bcryptjs";
+import bcrypt from "bcryptjs";
+
+const LOGGER = "LOGGER";
 
 export const Role = enumType({
   name: "Role",
@@ -44,6 +45,15 @@ export const MeQuery = queryType({
   },
 });
 
+const logsHandler = async (type: any, message: any, prisma: any) => {
+  return await prisma.logs.create({
+    data: {
+      type: type,
+      message: message,
+    },
+  });
+};
+
 export const UserLogin = extendType({
   type: "Mutation",
   definition(t) {
@@ -55,8 +65,16 @@ export const UserLogin = extendType({
       },
       resolve: async (_root, args, { prisma, makeToken, pubsub }) => {
         const { username, password } = args;
+        let log: any;
         const user = await prisma.user.findOne({ where: { username } });
         if (!user) {
+          log = await logsHandler(
+            "info",
+            `محاولة تسجيل بمستخدم غير موجود ${username}`,
+            prisma
+          );
+          await pubsub.publish(LOGGER, log);
+
           throw new Error("معلومات دخول خاطئة");
         }
         const isValidPassword = await bcrypt.compareSync(
@@ -64,10 +82,22 @@ export const UserLogin = extendType({
           user.password
         );
         if (!isValidPassword) {
+          log = await logsHandler(
+            "error",
+            `محاولة تسجيل خاطئة من المستخدم ${user.username}`,
+            prisma
+          );
+          await pubsub.publish(LOGGER, log);
           throw new Error("معلومات دخول خاطئة");
         }
         const token = await makeToken(user.id);
-        await pubsub.publish("LIVE_USER", `${user.username} online`);
+        log = await logsHandler(
+          "info",
+          `تم تسجيل دخول ${user.username}`,
+          prisma
+        );
+
+        await pubsub.publish(LOGGER, log);
         return { user, token };
       },
     });
@@ -128,7 +158,7 @@ export const adminUserCreation = extendType({
         password: stringArg({ required: true }),
         type: arg({ type: "Role", required: true, default: "VIEWER" }),
       },
-      resolve: async (_root, args, { prisma, userId, req }) => {
+      resolve: async (_root, args, { prisma, userId, req, pubsub }) => {
         const { username, password, type } = args;
         const adminId: any = await userId(req);
         const isAdmin = await prisma.user.findOne({ where: { id: adminId } });
@@ -136,11 +166,11 @@ export const adminUserCreation = extendType({
           where: { username: username },
         });
         if (!isAdmin) {
-          throw new Error("authontication error to create user");
+          throw new Error("لا تملك صلاحية");
         } else if (isUsernameExist) {
-          throw new Error("username already exiest");
+          throw new Error("يوجد مستخدم بهذا الاسم");
         } else if (isAdmin.rule !== "ADMIN") {
-          throw new Error("permission denied");
+          throw new Error("لا تملك صلاحية");
         }
 
         const hashedPass = await bcrypt.hashSync(password, 10);
@@ -152,7 +182,12 @@ export const adminUserCreation = extendType({
             email: `archiveHandler${Date.now()}@app.io`,
           },
         });
-
+        const log = await logsHandler(
+          "info",
+          `تم إنشاء المستخدم ${user.username} بصلاحية ${user.rule}`,
+          prisma
+        );
+        pubsub.publish(LOGGER, log);
         return `user ${user.username} was created successfully!`;
       },
     });
@@ -171,9 +206,9 @@ export const adminUserUpdate = extendType({
         type: arg({ type: "Role", required: false }),
         updateType: stringArg({ required: true }),
       },
-      resolve: async (_root, args, { prisma, userId, req }) => {
+      resolve: async (_root, args, { prisma, userId, req, pubsub }) => {
         const { username, password, type, uid, updateType }: any = args;
-        console.log(args);
+
         const adminId: any = await userId(req);
         const isAdmin = await prisma.user.findOne({ where: { id: adminId } });
         const userToEdit = await prisma.user.findOne({ where: { id: uid } });
@@ -189,10 +224,17 @@ export const adminUserUpdate = extendType({
         if (typeof updateType === "string") {
           switch (updateType) {
             case "username": {
-              await prisma.user.update({
+              const newUser = await prisma.user.update({
                 where: { id: uid },
                 data: { username },
               });
+              const log = await logsHandler(
+                "info",
+                `تم تحديث المستخدم ${newUser.id} إلى ${newUser.username}`,
+                prisma
+              );
+              pubsub.publish(LOGGER, log);
+
               return "updated";
             }
             case "password": {
@@ -204,10 +246,16 @@ export const adminUserUpdate = extendType({
               return "updated";
             }
             case "role": {
-              await prisma.user.update({
+              const newUser = await prisma.user.update({
                 where: { id: uid },
                 data: { rule: type },
               });
+              const log = await logsHandler(
+                "info",
+                `تم تحديث المستخدم ${newUser.id} إلى ${newUser.rule}`,
+                prisma
+              );
+              pubsub.publish(LOGGER, log);
               return "updated";
             }
             default:
