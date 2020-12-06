@@ -163,20 +163,6 @@ export const CreateDocument = extendType({
           logger.info("name", filename);
           const file_extention = extname(filename);
           const tempNameForNow = `${Date.now()}${file_extention}`;
-          const newFileBasedOnInfo = `${content
-            .trim()
-            .split(" ")
-            .join("_")}-${doc_date
-            .trim()
-            .split("/")
-            .join(".")
-            .split("\\")
-            .join(".")}-${doc_number
-            .trim()
-            .replace(
-              "/",
-              "."
-            )}-${doc_type.trim()}-${Date.now()}${file_extention}`;
 
           const didUploadFile = await upload_proccessing({
             stream: createReadStream(),
