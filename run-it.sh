@@ -3,10 +3,10 @@
 echo "-> starting prisma migrations to postgres...\n"
 cd /usr/app/
 ./wait-for-it.sh db:5432 -- echo "db online\n"
-npm run migrate:save --name initprod
-npm run migrate:up
+# npm run migrate:save --name initprod
+# npm run migrate:up
 
-sleep 5
+sleep 2
 
 npm run build
 npm start

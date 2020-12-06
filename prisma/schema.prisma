@@ -23,7 +23,6 @@ model User {
   created_at DateTime   @default(now())
   updated_at DateTime   @default(now())
   docs       Document[]
-  Document   Document[] @relation("DocHandeling")
 }
 
 model Document {
@@ -38,11 +37,13 @@ model Document {
   userId      Int
   tags        Tag[]        @relation(references: [id])
   file_url    String?
-  type        DocType      @default(DEFAULT)
-  has_date    Boolean?     @default(false)
-  closed      Boolean?     @default(true)
-  handler     User         @relation("DocHandeling")
   attachment  Attachment[]
+  type DocType  @default(DEFAULT)
+  has_date  Boolean? @default(false)
+  status  Boolean?    @default(false)
+  exp_date  DateTime? @default(now())
+  handlerId Int?
+
   created_at  DateTime     @default(now())
   updated_at  DateTime     @default(now())
 }
@@ -75,6 +76,7 @@ enum Rule {
   ADMIN
   USER
   VIEWER
+  WORKER
 }
 
 enum DocType {

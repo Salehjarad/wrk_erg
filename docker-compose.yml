@@ -10,6 +10,7 @@ services:
     container_name: archive-server
     volumes:
       - "D:/server_uploades:/usr/app/server_uploades"
+      - "D:/logs:/usr/app/log"
     depends_on:
       - db
     links:
@@ -26,6 +27,8 @@ services:
       - POSTGRES_DB=archive
     volumes:
       - "D:/postgresql/data:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
     expose:
       - 5432
 # volumes:

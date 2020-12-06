@@ -1,6 +1,7 @@
 FROM node:12.19.0
 # ARG DATABASE_URL
 # ENV DATABASE_URL=${DATABASE_URL}
+ENV NODE_ENV production
 WORKDIR /usr/app
 COPY package*.json ./
 RUN npm install

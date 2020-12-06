@@ -5,7 +5,7 @@ import { PubSub } from "apollo-server-express";
 import { configure, getLogger, Logger } from "log4js";
 import { join } from "path";
 
-configure(join(__dirname, "../log4js.json"));
+configure(join(process.cwd() , "log4js.json"));
 
 const prisma = new PrismaClient();
 const pubsub = new PubSub();
